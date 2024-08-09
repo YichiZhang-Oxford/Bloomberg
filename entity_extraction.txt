@@ -1,0 +1,131 @@
+
+-Goal-
+Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.
+
+-Steps-
+1. Identify all entities. For each identified entity, extract the following information:
+- entity_name: Name of the entity, capitalized
+- entity_type: One of the following types: [commodity, price, date, supply, demand, location, event, market_indicator, market_participant, market_behavior]
+- entity_description: Comprehensive description of the entity's attributes and activities
+Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>){record_delimiter}
+
+2. From the entities identified in step 1, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
+For each pair of related entities, extract the following information:
+- source_entity: name of the source entity, as identified in step 1
+- target_entity: name of the target entity, as identified in step 1
+- relationship_description: explanation as to why you think the source entity and the target entity are related to each other
+- relationship_strength: an integer score between 1 to 10, indicating strength of the relationship between the source entity and target entity
+
+Format each relationship as ("relationship"{tuple_delimiter}<source_entity>{tuple_delimiter}<target_entity>{tuple_delimiter}<relationship_description>{tuple_delimiter}<relationship_strength>){record_delimiter}
+
+3, Use **{record_delimiter}** as the list delimiter.
+
+4. Return output in The primary language of the provided text is English. as a single list of all the entities and relationships identified in steps 1 and 2. If you have to translate, just translate the descriptions, nothing else!
+
+5. When finished, output {completion_delimiter}
+
+-Examples-
+######################
+
+Example 1:
+
+entity_types: [commodity, price, date, supply, demand, location, event, market_indicator, market_participant, market_behavior]
+text:
+ and robust demand. Despite the steady prices, uncertainties about future economic conditions and production policies continue to influence market sentiment. Overall, today’s stability highlights the complexities driving the oil market.
+
+Day 9 (July 27, 2024):
+
+Oil prices surged today, with WTI crude increasing 1.5% to $87.00 per barrel and Brent crude rising 1.4% to $89.20 per barrel. The significant rise was driven by an upward revision in global demand forecasts and positive economic indicators. The International Energy Agency (IEA) adjusted its demand outlook, citing stronger-than-expected consumption in industrial and transportation sectors. Additionally, ongoing geopolitical tensions and supply constraints from major oil-producing countries contributed to the bullish sentiment. Reports of reduced production from key regions and concerns about potential supply disruptions supported higher prices. Despite the optimism, analysts caution about potential volatility due to uncertainties regarding future production levels and economic shifts. The oil market continues to experience heightened activity, with strong demand and managed supply driving current price movements. Traders remain vigilant for any developments that could impact future price trends.
+
+Day 10 (July 28, 2024):
+
+Oil prices experienced a slight retreat today, with WTI crude falling 1.2% to $85.40 per barrel and Brent crude decreasing 1.1% to $88.20 per barrel. The decline was attributed to profit-taking following recent gains and ongoing concerns about future supply and demand dynamics. Despite a positive demand outlook, the market is cautious about potential changes in production levels and geopolitical risks. Recent reports suggested that while global demand remains strong, uncertainties about future economic conditions and possible shifts in production policies contribute to market volatility. Traders are closely monitoring these factors as they assess the balance between supply constraints and demand growth. The oil market continues to navigate a complex environment, with current price movements reflecting a delicate equilibrium between strong demand forecasts and potential supply disruptions. As always, market participants remain alert for any developments that could influence future price trends.
+------------------------
+output:
+("entity"{tuple_delimiter}Oil prices{tuple_delimiter}price{tuple_delimiter}The price of oil, including WTI and Brent crude, which fluctuates based on various market conditions.){record_delimiter}
+("entity"{tuple_delimiter}WTI crude{tuple_delimiter}commodity{tuple_delimiter}West Texas Intermediate (WTI) crude oil, a type of oil used as a benchmark in oil pricing.){record_delimiter}
+("entity"{tuple_delimiter}Brent crude{tuple_delimiter}commodity{tuple_delimiter}Brent crude oil, another benchmark used for pricing oil globally.){record_delimiter}
+("entity"{tuple_delimiter}July 27, 2024{tuple_delimiter}date{tuple_delimiter}The date on which oil prices surged, with significant increases in both WTI and Brent crude.){record_delimiter}
+("entity"{tuple_delimiter}International Energy Agency (IEA){tuple_delimiter}market_participant{tuple_delimiter}An organization that adjusted its demand outlook, impacting oil prices.){record_delimiter}
+("entity"{tuple_delimiter}demand{tuple_delimiter}demand{tuple_delimiter}The need for oil, which has been forecasted to increase due to stronger-than-expected consumption in industrial and transportation sectors.){record_delimiter}
+("entity"{tuple_delimiter}supply constraints{tuple_delimiter}supply{tuple_delimiter}Limitations in oil production from major oil-producing countries that affect market prices.){record_delimiter}
+("entity"{tuple_delimiter}geopolitical tensions{tuple_delimiter}event{tuple_delimiter}Ongoing international political conflicts that influence oil prices.){record_delimiter}
+("entity"{tuple_delimiter}price movements{tuple_delimiter}market_behavior{tuple_delimiter}The fluctuations in oil prices due to various market factors.){record_delimiter}
+("entity"{tuple_delimiter}July 28, 2024{tuple_delimiter}date{tuple_delimiter}The date on which oil prices experienced a slight decline.){record_delimiter}
+("entity"{tuple_delimiter}profit-taking{tuple_delimiter}market_behavior{tuple_delimiter}The act of selling assets to lock in profits, contributing to the slight retreat in oil prices.){record_delimiter}
+("entity"{tuple_delimiter}future supply and demand dynamics{tuple_delimiter}market_indicator{tuple_delimiter}Factors affecting future oil prices, including potential changes in supply and demand.){record_delimiter}
+("relationship"{tuple_delimiter}Oil prices{tuple_delimiter}WTI crude{tuple_delimiter}WTI crude is a major component of oil prices.{tuple_delimiter}9){record_delimiter}
+("relationship"{tuple_delimiter}Oil prices{tuple_delimiter}Brent crude{tuple_delimiter}Brent crude is a major component of oil prices.{tuple_delimiter}9){record_delimiter}
+("relationship"{tuple_delimiter}WTI crude{tuple_delimiter}Brent crude{tuple_delimiter}Both are types of crude oil used as benchmarks in pricing.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}July 27, 2024{tuple_delimiter}Oil prices{tuple_delimiter}Significant changes in oil prices occurred on this date.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}International Energy Agency (IEA){tuple_delimiter}demand{tuple_delimiter}The IEA adjusted its demand outlook, affecting oil prices.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}demand{tuple_delimiter}supply constraints{tuple_delimiter}Strong demand combined with supply constraints influenced oil prices.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}geopolitical tensions{tuple_delimiter}supply constraints{tuple_delimiter}Geopolitical tensions contributed to supply constraints.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}price movements{tuple_delimiter}demand{tuple_delimiter}Demand forecasts impacted price movements.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}price movements{tuple_delimiter}supply constraints{tuple_delimiter}Supply constraints impacted price movements.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}July 28, 2024{tuple_delimiter}Oil prices{tuple_delimiter}A slight decline in oil prices occurred on this date.{tuple_delimiter}6){record_delimiter}
+("relationship"{tuple_delimiter}profit-taking{tuple_delimiter}Oil prices{tuple_delimiter}Profit-taking led to a slight retreat in oil prices.{tuple_delimiter}6){record_delimiter}
+("relationship"{tuple_delimiter}future supply and demand dynamics{tuple_delimiter}Oil prices{tuple_delimiter}Future supply and demand dynamics are indicators affecting oil prices.{tuple_delimiter}7){record_delimiter}
+{completion_delimiter}
+#############################
+
+
+Example 2:
+
+entity_types: [commodity, price, date, supply, demand, location, event, market_indicator, market_participant, market_behavior]
+text:
+Day 1 (July 19, 2024):
+
+Oil prices fell today, with West Texas Intermediate (WTI) crude dropping 0.8% to $82.50 per barrel and Brent crude decreasing 0.9% to $85.10 per barrel. The decline was attributed to a rise in U.S. oil production, which exacerbated fears of an oversupply. Recent data revealed an increase in U.S. rig counts and output, challenging the efforts of OPEC+ to stabilize the market through production cuts. Although global demand remains relatively stable, the increase in U.S. supply contributed to market uncertainties. Additionally, mixed economic signals from key markets added to the volatility. Traders are concerned that the growing U.S. production could offset the impacts of OPEC+ cuts, leading to potential imbalances. Geopolitical tensions, particularly in oil-rich regions, remain a backdrop but did not significantly influence today’s price action. Analysts are watching closely to see if this trend continues and how it might affect the balance between supply and demand.
+
+Day 2 (July 20, 2024):
+
+Oil prices rebounded strongly today, with WTI rising 1.4% to $83.80 per barrel and Brent up 1.2% to $86.20 per barrel. This increase was driven by a substantial drop in U.S. oil inventories, which indicated stronger-than-expected domestic demand. The Energy Information Administration (EIA) reported a significant drawdown in stockpiles, easing concerns about oversupply and supporting higher prices. Furthermore, OPEC+ compliance with production cuts continued to tighten global supply. Positive economic data, including higher industrial output and increased transportation fuel consumption, bolstered the market. Despite these positive indicators, traders remain cautious about potential fluctuations in production levels and broader economic conditions. The rebound reflects renewed optimism that demand is resilient and supply constraints are effective. However, market participants are vigilant about potential supply disruptions and geopolitical developments that could influence future price movements.
+
+Day 3 (July 21, 2024):
+
+Oil prices extended their gains today, with WTI crude climbing 1.6% to $85.00 per barrel and Brent crude increasing 1.4% to $87.80 per barrel. The market’s positive momentum was fueled by improved economic indicators and sustained confidence in oil demand. Reports showed robust industrial activity and higher-than-expected fuel consumption, which supported the rise in prices. Additionally, OPEC
+------------------------
+output:
+("entity"{tuple_delimiter}Oil prices{tuple_delimiter}price{tuple_delimiter}The price of oil, including WTI and Brent crude, which fluctuates based on various market conditions.){record_delimiter}
+("entity"{tuple_delimiter}West Texas Intermediate (WTI) crude{tuple_delimiter}commodity{tuple_delimiter}West Texas Intermediate (WTI) crude oil, a type of oil used as a benchmark in oil pricing.){record_delimiter}
+("entity"{tuple_delimiter}Brent crude{tuple_delimiter}commodity{tuple_delimiter}Brent crude oil, another benchmark used for pricing oil globally.){record_delimiter}
+("entity"{tuple_delimiter}July 19, 2024{tuple_delimiter}date{tuple_delimiter}The date on which oil prices fell due to a rise in U.S. oil production.){record_delimiter}
+("entity"{tuple_delimiter}U.S. oil production{tuple_delimiter}supply{tuple_delimiter}The amount of oil produced by the United States, which increased, leading to fears of an oversupply.){record_delimiter}
+("entity"{tuple_delimiter}OPEC+{tuple_delimiter}market_participant{tuple_delimiter}An alliance of oil-producing countries that aims to manage oil production and stabilize the market.){record_delimiter}
+("entity"{tuple_delimiter}U.S. rig counts{tuple_delimiter}market_indicator{tuple_delimiter}The number of operational oil drilling rigs in the United States, an indicator of oil production levels.){record_delimiter}
+("entity"{tuple_delimiter}global demand{tuple_delimiter}demand{tuple_delimiter}The overall need for oil worldwide, which remained relatively stable despite increased U.S. supply.){record_delimiter}
+("entity"{tuple_delimiter}geopolitical tensions{tuple_delimiter}event{tuple_delimiter}Ongoing international political conflicts, particularly in oil-rich regions.){record_delimiter}
+("entity"{tuple_delimiter}July 20, 2024{tuple_delimiter}date{tuple_delimiter}The date on which oil prices rebounded due to a drop in U.S. oil inventories.){record_delimiter}
+("entity"{tuple_delimiter}U.S. oil inventories{tuple_delimiter}supply{tuple_delimiter}The stockpiles of oil in the United States, which decreased significantly, indicating stronger domestic demand.){record_delimiter}
+("entity"{tuple_delimiter}Energy Information Administration (EIA){tuple_delimiter}market_participant{tuple_delimiter}A U.S. government agency that reported a significant drawdown in oil stockpiles.){record_delimiter}
+("entity"{tuple_delimiter}OPEC+ production cuts{tuple_delimiter}supply{tuple_delimiter}Efforts by OPEC+ to reduce oil production to stabilize the market.){record_delimiter}
+("entity"{tuple_delimiter}positive economic data{tuple_delimiter}market_indicator{tuple_delimiter}Indicators such as higher industrial output and increased transportation fuel consumption.){record_delimiter}
+("entity"{tuple_delimiter}July 21, 2024{tuple_delimiter}date{tuple_delimiter}The date on which oil prices extended their gains due to improved economic indicators.){record_delimiter}
+("entity"{tuple_delimiter}industrial activity{tuple_delimiter}market_indicator{tuple_delimiter}Robust industrial activity that contributed to higher oil prices.){record_delimiter}
+("relationship"{tuple_delimiter}Oil prices{tuple_delimiter}West Texas Intermediate (WTI) crude{tuple_delimiter}WTI crude is a major component of oil prices.{tuple_delimiter}9){record_delimiter}
+("relationship"{tuple_delimiter}Oil prices{tuple_delimiter}Brent crude{tuple_delimiter}Brent crude is a major component of oil prices.{tuple_delimiter}9){record_delimiter}
+("relationship"{tuple_delimiter}July 19, 2024{tuple_delimiter}Oil prices{tuple_delimiter}Significant changes in oil prices occurred on this date.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}U.S. oil production{tuple_delimiter}Oil prices{tuple_delimiter}Increased U.S. oil production led to a decline in oil prices.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}U.S. oil production{tuple_delimiter}OPEC+{tuple_delimiter}Increased U.S. production challenged OPEC+ efforts to stabilize the market.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}OPEC+{tuple_delimiter}OPEC+ production cuts{tuple_delimiter}OPEC+ implemented production cuts to stabilize the market.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}U.S. rig counts{tuple_delimiter}U.S. oil production{tuple_delimiter}An increase in U.S. rig counts indicated higher oil production.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}global demand{tuple_delimiter}Oil prices{tuple_delimiter}Stable global demand contributed to oil price fluctuations.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}geopolitical tensions{tuple_delimiter}Oil prices{tuple_delimiter}Geopolitical tensions influenced oil prices.{tuple_delimiter}6){record_delimiter}
+("relationship"{tuple_delimiter}July 20, 2024{tuple_delimiter}Oil prices{tuple_delimiter}Significant changes in oil prices occurred on this date.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}U.S. oil inventories{tuple_delimiter}Oil prices{tuple_delimiter}A drop in U.S. oil inventories led to a rebound in oil prices.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}Energy Information Administration (EIA){tuple_delimiter}U.S. oil inventories{tuple_delimiter}The EIA reported a significant drawdown in oil stockpiles.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}positive economic data{tuple_delimiter}Oil prices{tuple_delimiter}Positive economic data contributed to the rebound in oil prices.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}July 21, 2024{tuple_delimiter}Oil prices{tuple_delimiter}Significant changes in oil prices occurred on this date.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}industrial activity{tuple_delimiter}Oil prices{tuple_delimiter}Robust industrial activity supported higher oil prices.{tuple_delimiter}7){record_delimiter}
+{completion_delimiter}
+#############################
+
+
+
+-Real Data-
+######################
+entity_types: [commodity, price, date, supply, demand, location, event, market_indicator, market_participant, market_behavior]
+text: {input_text}
+######################
+output:
